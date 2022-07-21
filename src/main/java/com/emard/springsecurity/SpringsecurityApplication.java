@@ -1,10 +1,12 @@
 package com.emard.springsecurity;
 
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 @SpringBootApplication
 public class SpringsecurityApplication {
@@ -26,18 +28,18 @@ public class SpringsecurityApplication {
 			service.saveRole(new Role(null, "ROLE_ADMIN"));
 			service.saveRole(new Role(null, "ROLE_SUPER_ADMIN"));
 
-			service.saveUser(new AppUser(null, "John Travolta", "john", "1234", new ArrayList<>()));
-			service.saveUser(new AppUser(null, "Will Smith", "will", "1234", new ArrayList<>()));
-			service.saveUser(new AppUser(null, "Jim Carry", "jim", "1234", new ArrayList<>()));
-			service.saveUser(new AppUser(null, "Arnold Scharzeneger", "arnold", "1234", new ArrayList<>()));
+			service.saveUser(new AppUser(null, "John Travolta", "john@gmail.com", "12345", new ArrayList<>()));
+			service.saveUser(new AppUser(null, "Will Smith", "will@gmail.com", "12345", new ArrayList<>()));
+			service.saveUser(new AppUser(null, "Jim Carry", "jim@gmail.com", "12345", new ArrayList<>()));
+			service.saveUser(new AppUser(null, "Arnold Scharzeneger", "arnold@gmail.com", "12345", new ArrayList<>()));
 
-			service.addRoleToUser("john", "ROLE_USER");
-			service.addRoleToUser("john", "ROLE_MANAGER");
-			service.addRoleToUser("will", "ROLE_MANAGER");
-			service.addRoleToUser("jim", "ROLE_ADMIN");
-			service.addRoleToUser("arnold", "ROLE_SUPER_ADMIN");
-			service.addRoleToUser("arnold", "ROLE_ADMIN");
-			service.addRoleToUser("arnold", "ROLE_USER");
+			service.addRoleToUser("john@gmail.com", "ROLE_USER");
+			service.addRoleToUser("john@gmail.com", "ROLE_MANAGER");
+			service.addRoleToUser("will@gmail.com", "ROLE_MANAGER");
+			service.addRoleToUser("jim@gmail.com", "ROLE_ADMIN");
+			service.addRoleToUser("arnold@gmail.com", "ROLE_SUPER_ADMIN");
+			service.addRoleToUser("arnold@gmail.com", "ROLE_ADMIN");
+			service.addRoleToUser("arnold@gmail.com", "ROLE_USER");
 		};
 	}*/
 

@@ -1,14 +1,32 @@
 package com.emard.springsecurity.controller;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.emard.springsecurity.domain.AccountTransactions;
+import com.emard.springsecurity.domain.AppUser;
+import com.emard.springsecurity.repo.AccountTransactionsRepository;
+
+import lombok.AllArgsConstructor;
+
+@AllArgsConstructor
 @RestController
 public class BalanceController {
 	
-	@GetMapping("/myBalance")
-	public String getBalanceDetails(String input) {
-		return "Here are the balance details from the DB";
+	private final AccountTransactionsRepository accountTransactionsRepository;
+	
+	@PostMapping("/myBalance")
+	public List<AccountTransactions> getBalanceDetails(@RequestBody AppUser customer) {
+		List<AccountTransactions> accountTransactions = accountTransactionsRepository.
+				findByCustomerIdOrderByTransactionDtDesc(customer.getId());
+		if (accountTransactions != null ) {
+			return accountTransactions;
+		}else {
+			return null;
+		}
 	}
 
 }
