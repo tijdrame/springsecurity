@@ -54,10 +54,10 @@ public class ProjectSecurityConfig {
         .ignoringAntMatchers("/contact")//pas forcement conecte donc pas de xsrf a envoyé pour au backend 
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
         .authorizeRequests()
-                .antMatchers("/myAccount").authenticated()
-                .antMatchers("/myBalance").authenticated()
-                .antMatchers("/myLoans").authenticated()
-                .antMatchers("/myCards").authenticated()
+                .antMatchers("/myAccount").hasRole("ADMIN")//sans prefix
+                .antMatchers("/myBalance").hasRole("USER")
+                .antMatchers("/myLoans").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/myCards").hasAuthority("ROLE_USER")
                 // .anyRequest().permitAll()
                 .antMatchers("/notices", "/contact", "/login").permitAll()
                 // .antMatchers("/contact").permitAll()
