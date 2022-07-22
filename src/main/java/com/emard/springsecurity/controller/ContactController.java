@@ -19,6 +19,7 @@ public class ContactController {
 	private final ContactRepository contactRepository;
 	
 	@PostMapping("/contact")
+	//@PreFilter("filterObject.contactName == 'Test'") //filterObject est le param recu ici contact
 	public Contact saveContactInquiryDetails(@RequestBody Contact contact) {
 		contact.setContactId(getServiceReqNumber());
 		contact.setCreateDt(new Date(System.currentTimeMillis()));

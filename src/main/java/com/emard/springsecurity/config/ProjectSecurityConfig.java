@@ -7,12 +7,12 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 
@@ -25,6 +25,7 @@ import com.emard.springsecurity.filter.RequestValidationBeforeFilter;
 //import lombok.AllArgsConstructor;
 
 @Configuration
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 //@AllArgsConstructor
 public class ProjectSecurityConfig {
     //private final UserDetailsService userDetailsService;
@@ -79,7 +80,7 @@ public class ProjectSecurityConfig {
         .authorizeRequests()
                 .antMatchers("/myAccount").hasRole("ADMIN")//sans prefix
                 .antMatchers("/myBalance").hasRole("USER")
-                .antMatchers("/myLoans").hasAuthority("ROLE_ADMIN")
+                .antMatchers("/myLoans").authenticated()
                 .antMatchers("/myCards").hasAuthority("ROLE_USER")
                 .antMatchers( "/user").authenticated()
                 // .anyRequest().permitAll()
