@@ -1,5 +1,6 @@
 package com.emard.springsecurity.config;
 
+import java.util.Arrays;
 import java.util.Collections;
 
 import javax.servlet.http.HttpServletRequest;
@@ -8,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
@@ -16,6 +18,8 @@ import org.springframework.web.cors.CorsConfigurationSource;
 
 import com.emard.springsecurity.filter.AuthoritiesLoggingAfterFilter;
 import com.emard.springsecurity.filter.AuthoritiesLoggingAtFilter;
+import com.emard.springsecurity.filter.JWTTokenGeneratorFilter;
+import com.emard.springsecurity.filter.JWTTokenValidatorFilter;
 import com.emard.springsecurity.filter.RequestValidationBeforeFilter;
 
 //import lombok.AllArgsConstructor;
@@ -41,6 +45,8 @@ public class ProjectSecurityConfig {
          * Custom configurations as per our requirement
          */
         http
+        // pour dire a spring sec de ne pas gérer la session (il ne vas creer de token comme JSessionId)
+        .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and()
         .cors().configurationSource(new CorsConfigurationSource() {
             @Override
             public CorsConfiguration getCorsConfiguration(HttpServletRequest request) {
@@ -49,19 +55,25 @@ public class ProjectSecurityConfig {
                 config.setAllowedMethods(Collections.singletonList("*"));
                 config.setAllowCredentials(true);
                 config.setAllowedHeaders(Collections.singletonList("*"));
+                // pour ajouter au header une balise authorization avec le token
+                config.setExposedHeaders(Arrays.asList("Authorization"));
                 config.setMaxAge(3600L);
                 return config;
             }
         })
         .and()
         //.csrf().disable()//par defaul mais pas conseillé coté sécurité
-        .csrf()
-        .ignoringAntMatchers("/contact")//pas forcement conecte donc pas de xsrf a envoyé pour au backend 
-        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+        .csrf().disable()
+        //pas besoin de csrf car avec jwt il y a un controle qui est fait
+        //.ignoringAntMatchers("/contact")//pas forcement conecte donc pas de xsrf a envoyé pour au backend 
+        //.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
         //le filter sera executer avant BasicAuthenticationFilter (usrdetailService) donc desactiver AuthenticationProvider 
         .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
         //sexec apres Basic...
         .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+        //add filter jwt
+        .addFilterBefore(new JWTTokenValidatorFilter(), BasicAuthenticationFilter.class)
+        .addFilterAfter(new JWTTokenGeneratorFilter(), BasicAuthenticationFilter.class)
         // spring secu va choisir de maniére aléattoire lequel exec le 1er a chaqu fois
         .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
         .authorizeRequests()
@@ -69,6 +81,7 @@ public class ProjectSecurityConfig {
                 .antMatchers("/myBalance").hasRole("USER")
                 .antMatchers("/myLoans").hasAuthority("ROLE_ADMIN")
                 .antMatchers("/myCards").hasAuthority("ROLE_USER")
+                .antMatchers( "/user").authenticated()
                 // .anyRequest().permitAll()
                 .antMatchers("/notices", "/contact", "/login").permitAll()
                 // .antMatchers("/contact").permitAll()
