@@ -9,9 +9,14 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
+
+import com.emard.springsecurity.filter.AuthoritiesLoggingAfterFilter;
+import com.emard.springsecurity.filter.AuthoritiesLoggingAtFilter;
+import com.emard.springsecurity.filter.RequestValidationBeforeFilter;
 
 //import lombok.AllArgsConstructor;
 
@@ -53,6 +58,12 @@ public class ProjectSecurityConfig {
         .csrf()
         .ignoringAntMatchers("/contact")//pas forcement conecte donc pas de xsrf a envoyé pour au backend 
         .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+        //le filter sera executer avant BasicAuthenticationFilter (usrdetailService) donc desactiver AuthenticationProvider 
+        .addFilterBefore(new RequestValidationBeforeFilter(), BasicAuthenticationFilter.class)
+        //sexec apres Basic...
+        .addFilterAfter(new AuthoritiesLoggingAfterFilter(), BasicAuthenticationFilter.class)
+        // spring secu va choisir de maniére aléattoire lequel exec le 1er a chaqu fois
+        .addFilterAt(new AuthoritiesLoggingAtFilter(), BasicAuthenticationFilter.class)
         .authorizeRequests()
                 .antMatchers("/myAccount").hasRole("ADMIN")//sans prefix
                 .antMatchers("/myBalance").hasRole("USER")

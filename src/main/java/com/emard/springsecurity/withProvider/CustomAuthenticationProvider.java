@@ -11,7 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+//import org.springframework.stereotype.Component;
 
 import com.emard.springsecurity.domain.AppUser;
 import com.emard.springsecurity.repo.UserRepository;
@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 
 //il est prioritaire
 @AllArgsConstructor
-@Component
+//@Component
 public class CustomAuthenticationProvider implements AuthenticationProvider{
 
     private final UserRepository userRepository;
