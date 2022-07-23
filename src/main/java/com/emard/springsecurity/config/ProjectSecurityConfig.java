@@ -24,8 +24,8 @@ import com.emard.springsecurity.filter.RequestValidationBeforeFilter;
 
 //import lombok.AllArgsConstructor;
 
-@Configuration
-@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
+//@Configuration
+//@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 //@AllArgsConstructor
 public class ProjectSecurityConfig {
     //private final UserDetailsService userDetailsService;

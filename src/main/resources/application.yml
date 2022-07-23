@@ -1,4 +1,11 @@
 spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          github:
+            client-id: 628760597fb0cd92a95a 
+            client-secret: edb939873429436885a1ddcea0fd83da855ed71b
  # security:
   #  user:
    #   name: tij
